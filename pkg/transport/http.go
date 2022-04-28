@@ -33,8 +33,38 @@ func NewHTTPHandler(ep endpoint.Set) http.Handler {
 		encodeResponse,
 	))
 
+	m.Handle("/card/create", httptransport.NewServer(
+		ep.CreateCardEndpoint,
+		decodeHTTPAccountRequest,
+		encodeResponse,
+	))
+
+	m.Handle("/card/update", httptransport.NewServer(
+		ep.UpdateCardEndpoint,
+		decodeHTTPAccountRequest,
+		encodeResponse,
+	))
+
+	m.Handle("/card/delete", httptransport.NewServer(
+		ep.DeleteCardEndpoint,
+		decodeHTTPAccountRequest,
+		encodeResponse,
+	))
+
+	m.Handle("/card/get", httptransport.NewServer(
+		ep.GetCardEndpoint,
+		decodeHTTPAccountRequest,
+		encodeResponse,
+	))
+
 	m.Handle("/authorize", httptransport.NewServer(
 		ep.AuthorizeEndpoint,
+		decodeHTTPPaymentRequest,
+		encodeResponse,
+	))
+
+	m.Handle("/capture", httptransport.NewServer(
+		ep.CaptureEndpoint,
 		decodeHTTPPaymentRequest,
 		encodeResponse,
 	))

@@ -11,36 +11,19 @@ type GetMDKTokenResponse struct {
 	Err   string `json:"err,omitempty"`
 }
 
-// CreateAccountRequest struct
+// AccountRequest struct
 // veritrans.AccountParam
 
-// CreateAccountResponse struct
-type CreateAccountResponse struct {
+// AccountResponse struct
+type AccountResponse struct {
 	Account *veritrans.Account `json:"account,omitempty"`
 	Err     string             `json:"err"`
 }
 
-// UpdateAccountRequest struct
+// PaymentRequest struct
 // veritrans.AccountParam
 
-// UpdateAccountResponse struct
-type UpdateAccountResponse struct {
-	Account *veritrans.Account `json:"account,omitempty"`
-	Err     string             `json:"err"`
-}
-
-// AuthorizeRequest struct
-// veritrans.AccountParam
-
-// AuthorizeResponse struct
-type AuthorizeResponse struct {
-	Err string `json:"err"`
-}
-
-// CancelRequest struct
-// veritrans.AccountParam
-
-// CancelResponse struct
-type CancelResponse struct {
+// PaymentResponse struct
+type PaymentResponse struct {
 	Err string `json:"err"`
 }
