@@ -43,8 +43,29 @@ func (v *veritransService) UpdateAccount(_ context.Context, accountParam *veritr
 	return v.AccountService.UpdateAccount(accountParam)
 }
 
+func (v *veritransService) CreateCard(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+	return v.AccountService.CreateCard(accountParam)
+}
+
+func (v *veritransService) UpdateCard(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+	return v.AccountService.UpdateCard(accountParam)
+}
+
+func (v *veritransService) DeleteCard(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+	return v.AccountService.DeleteCard(accountParam)
+}
+
+func (v *veritransService) GetCard(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+	return v.AccountService.GetCard(accountParam)
+}
+
 func (v *veritransService) Authorize(_ context.Context, param *veritrans.Params) error {
 	_, err := v.PaymentService.Authorize(param, veritrans.PaymentServiceType(veritrans.PayCard))
+	return err
+}
+
+func (v *veritransService) Capture(_ context.Context, param *veritrans.Params) error {
+	_, err := v.PaymentService.Capture(param, veritrans.PaymentServiceType(veritrans.PayCard))
 	return err
 }
 
