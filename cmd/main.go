@@ -38,7 +38,7 @@ func main() {
 	}
 
 	var (
-		service     = pkg.NewService(getServiceConfig())
+		service     = pkg.NewLoggingMiddleware(logger, pkg.NewService(getServiceConfig()))
 		eps         = endpoint.NewEndpointSet(service)
 		httpHandler = transport.NewHTTPHandler(eps)
 		// grpcServer = transport.NewGRPCServer(eps)

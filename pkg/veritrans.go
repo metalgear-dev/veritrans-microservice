@@ -1,8 +1,6 @@
 package pkg
 
 import (
-	"context"
-
 	"github.com/david1992121/veritrans-microservice/internal/veritrans"
 )
 
@@ -31,45 +29,45 @@ func NewService(config *ServiceConfig) Service {
 	}
 }
 
-func (v *veritransService) GetMDKToken(_ context.Context, cardInfo *veritrans.ClientCardInfo) (string, error) {
+func (v *veritransService) GetMDKToken(cardInfo *veritrans.ClientCardInfo) (string, error) {
 	return v.MDKService.GetCardToken(cardInfo)
 }
 
-func (v *veritransService) CreateAccount(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+func (v *veritransService) CreateAccount(accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
 	return v.AccountService.CreateAccount(accountParam)
 }
 
-func (v *veritransService) UpdateAccount(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+func (v *veritransService) UpdateAccount(accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
 	return v.AccountService.UpdateAccount(accountParam)
 }
 
-func (v *veritransService) CreateCard(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+func (v *veritransService) CreateCard(accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
 	return v.AccountService.CreateCard(accountParam)
 }
 
-func (v *veritransService) UpdateCard(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+func (v *veritransService) UpdateCard(accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
 	return v.AccountService.UpdateCard(accountParam)
 }
 
-func (v *veritransService) DeleteCard(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+func (v *veritransService) DeleteCard(accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
 	return v.AccountService.DeleteCard(accountParam)
 }
 
-func (v *veritransService) GetCard(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
+func (v *veritransService) GetCard(accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
 	return v.AccountService.GetCard(accountParam)
 }
 
-func (v *veritransService) Authorize(_ context.Context, param *veritrans.Params) error {
+func (v *veritransService) Authorize(param *veritrans.Params) error {
 	_, err := v.PaymentService.Authorize(param, veritrans.PaymentServiceType(veritrans.PayCard))
 	return err
 }
 
-func (v *veritransService) Capture(_ context.Context, param *veritrans.Params) error {
+func (v *veritransService) Capture(param *veritrans.Params) error {
 	_, err := v.PaymentService.Capture(param, veritrans.PaymentServiceType(veritrans.PayCard))
 	return err
 }
 
-func (v *veritransService) Cancel(_ context.Context, param *veritrans.Params) error {
+func (v *veritransService) Cancel(param *veritrans.Params) error {
 	_, err := v.PaymentService.Cancel(param, veritrans.PaymentServiceType(veritrans.PayCard))
 	return err
 }

@@ -40,9 +40,9 @@ func NewEndpointSet(svc pkg.Service) Set {
 
 // MakeGetMDKTokenEndpoint returns the endpoint for mdk token request
 func MakeGetMDKTokenEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.ClientCardInfo)
-		token, err := svc.GetMDKToken(ctx, &req)
+		token, err := svc.GetMDKToken(&req)
 		if err != nil {
 			return GetMDKTokenResponse{Token: "", Err: err.Error()}, nil
 		}
@@ -52,9 +52,9 @@ func MakeGetMDKTokenEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeCreateAccountEndpoint returns the endpoint for account create request
 func MakeCreateAccountEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.AccountParam)
-		account, err := svc.CreateAccount(ctx, &req)
+		account, err := svc.CreateAccount(&req)
 		if err != nil {
 			return account, nil
 		}
@@ -64,9 +64,9 @@ func MakeCreateAccountEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeUpdateAccountEndpoint returns the endpoint for acount update request
 func MakeUpdateAccountEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.AccountParam)
-		account, err := svc.UpdateAccount(ctx, &req)
+		account, err := svc.UpdateAccount(&req)
 		if err != nil {
 			return AccountResponse{Account: nil, Err: err.Error()}, nil
 		}
@@ -76,9 +76,9 @@ func MakeUpdateAccountEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeCreateCardEndpoint returns the endpoint for acount update request
 func MakeCreateCardEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.AccountParam)
-		account, err := svc.CreateCard(ctx, &req)
+		account, err := svc.CreateCard(&req)
 		if err != nil {
 			return AccountResponse{Account: nil, Err: err.Error()}, nil
 		}
@@ -88,9 +88,9 @@ func MakeCreateCardEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeUpdateCardEndpoint returns the endpoint for acount update request
 func MakeUpdateCardEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.AccountParam)
-		account, err := svc.UpdateCard(ctx, &req)
+		account, err := svc.UpdateCard(&req)
 		if err != nil {
 			return AccountResponse{Account: nil, Err: err.Error()}, nil
 		}
@@ -100,9 +100,9 @@ func MakeUpdateCardEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeDeleteCardEndpoint returns the endpoint for acount update request
 func MakeDeleteCardEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.AccountParam)
-		account, err := svc.DeleteCard(ctx, &req)
+		account, err := svc.DeleteCard(&req)
 		if err != nil {
 			return AccountResponse{Account: nil, Err: err.Error()}, nil
 		}
@@ -112,9 +112,9 @@ func MakeDeleteCardEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeGetCardEndpoint returns the endpoint for acount update request
 func MakeGetCardEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.AccountParam)
-		account, err := svc.GetCard(ctx, &req)
+		account, err := svc.GetCard(&req)
 		if err != nil {
 			return AccountResponse{Account: nil, Err: err.Error()}, nil
 		}
@@ -124,9 +124,9 @@ func MakeGetCardEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeAuthorizeEndpoint returns the endpoint for payment authorization request
 func MakeAuthorizeEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.Params)
-		err := svc.Authorize(ctx, &req)
+		err := svc.Authorize(&req)
 		if err != nil {
 			return PaymentResponse{Err: err.Error()}, nil
 		}
@@ -136,9 +136,9 @@ func MakeAuthorizeEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeCancelEndpoint returns the endpoint for payment cancel request
 func MakeCancelEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.Params)
-		err := svc.Cancel(ctx, &req)
+		err := svc.Cancel(&req)
 		if err != nil {
 			return PaymentResponse{Err: err.Error()}, nil
 		}
@@ -148,9 +148,9 @@ func MakeCancelEndpoint(svc pkg.Service) endpoint.Endpoint {
 
 // MakeCaptureEndpoint returns the endpoint for payment cancel request
 func MakeCaptureEndpoint(svc pkg.Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(veritrans.Params)
-		err := svc.Capture(ctx, &req)
+		err := svc.Capture(&req)
 		if err != nil {
 			return PaymentResponse{Err: err.Error()}, nil
 		}
