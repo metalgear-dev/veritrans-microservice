@@ -13,6 +13,7 @@ import (
 	"github.com/david1992121/veritrans-microservice/pkg/endpoint"
 	"github.com/david1992121/veritrans-microservice/pkg/transport"
 	"github.com/go-kit/kit/log"
+	"github.com/joho/godotenv"
 	"github.com/oklog/oklog/pkg/group"
 )
 
@@ -22,6 +23,7 @@ const (
 )
 
 func main() {
+	// set logger
 	var (
 		logger   log.Logger
 		httpAddr = net.JoinHostPort("localhost", envString("HTTP_PORT", defaultHTTPPort))
@@ -29,6 +31,11 @@ func main() {
 	)
 
 	logger = initLogger()
+
+	// get environment variables if exists
+	if err := godotenv.Load(); err != nil {
+		logger.Log("read", "env", "err", err)
+	}
 
 	var (
 		service     = pkg.NewService(getServiceConfig())
