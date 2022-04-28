@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/david1992121/veritrans-microservice/internal/veritrans"
 	"github.com/david1992121/veritrans-microservice/pkg"
 	"github.com/david1992121/veritrans-microservice/pkg/endpoint"
 	"github.com/david1992121/veritrans-microservice/pkg/transport"
@@ -30,7 +31,7 @@ func main() {
 	logger = initLogger()
 
 	var (
-		service     = pkg.NewService()
+		service     = pkg.NewService(getServiceConfig())
 		eps         = endpoint.NewEndpointSet(service)
 		httpHandler = transport.NewHTTPHandler(eps)
 		// grpcServer = transport.NewGRPCServer(eps)
@@ -96,4 +97,27 @@ func initLogger() log.Logger {
 	logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 	return logger
+}
+
+func getServiceConfig() *pkg.ServiceConfig {
+	mdkConfig := veritrans.MDKConfig{
+		APIURL:   os.Getenv("MDK_API_URL"),
+		APIToken: os.Getenv("MDK_API_TOKEN"),
+	}
+	connectionConfig := veritrans.ConnectionConfig{
+		MerchantCCID:     os.Getenv("MERCHANT_CCID"),
+		MerchantPassword: os.Getenv("MERCHANT_PASSWORD"),
+		AccountAPIURL:    os.Getenv("ACCOUNT_API_URL"),
+		PaymentAPIURL:    os.Getenv("PAYMENT_API_URL"),
+		SearchAPIURL:     os.Getenv("SEARCH_API_URL"),
+		TxnVersion:       os.Getenv("TXN_VERSION"),
+		DummyRequest:     os.Getenv("DUMMY_REQUEST"),
+	}
+
+	serviceConfig := &pkg.ServiceConfig{
+		MDKConfig:        mdkConfig,
+		ConnectionConfig: connectionConfig,
+	}
+
+	return serviceConfig
 }

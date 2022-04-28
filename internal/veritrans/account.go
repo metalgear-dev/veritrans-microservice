@@ -66,6 +66,14 @@ func (acc AccountService) CreateAccount(accountParam *AccountParam) (*Account, e
 		accountParam)
 }
 
+// UpdateAccount function
+func (acc AccountService) UpdateAccount(accountParam *AccountParam) (*Account, error) {
+	return acc.executeAccountProcess(
+		AccountServiceType(AccountType),
+		AccountManagementMode(MethodUpdate),
+		accountParam)
+}
+
 // DeleteAccount function
 func (acc AccountService) DeleteAccount(accountParam *AccountParam) (*Account, error) {
 	return acc.executeAccountProcess(
