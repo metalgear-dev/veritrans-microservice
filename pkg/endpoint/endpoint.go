@@ -20,7 +20,7 @@ type Set struct {
 // NewEndpointSet initializes the Set struct
 func NewEndpointSet(svc pkg.Service) Set {
 	return Set{
-		GetMDKTokenEndpoint:   MakeAuthorizeEndpoint(svc),
+		GetMDKTokenEndpoint:   MakeGetMDKTokenEndpoint(svc),
 		CreateAccountEndpoint: MakeCreateAccountEndpoint(svc),
 		UpdateAccountEndpoint: MakeUpdateAccountEndpoint(svc),
 		AuthorizeEndpoint:     MakeAuthorizeEndpoint(svc),

@@ -6,34 +6,49 @@ import (
 	"github.com/david1992121/veritrans-microservice/internal/veritrans"
 )
 
-type veritransService struct{}
+// ServiceConfig struct
+type ServiceConfig struct {
+	MDKConfig        veritrans.MDKConfig
+	ConnectionConfig veritrans.ConnectionConfig
+}
+
+type veritransService struct {
+	MDKService     *veritrans.MDKService
+	AccountService *veritrans.AccountService
+	PaymentService *veritrans.PaymentService
+}
 
 // NewService initializes the veritrans service
-func NewService() Service {
-	return &veritransService{}
+func NewService(config *ServiceConfig) Service {
+	mdkService := veritrans.NewMDKService(config.MDKConfig)
+
+	paymentService, _ := veritrans.NewPaymentService(config.ConnectionConfig)
+	accountService := veritrans.NewAccountService(config.ConnectionConfig)
+	return &veritransService{
+		MDKService:     mdkService,
+		AccountService: accountService,
+		PaymentService: paymentService,
+	}
 }
 
 func (v *veritransService) GetMDKToken(_ context.Context, cardInfo *veritrans.ClientCardInfo) (string, error) {
-	// Get MDK token from the card information
-	return "token", nil
+	return v.MDKService.GetCardToken(cardInfo)
 }
 
 func (v *veritransService) CreateAccount(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
-	// Create the veritrans account using the account information
-	return nil, nil
+	return v.AccountService.CreateAccount(accountParam)
 }
 
 func (v *veritransService) UpdateAccount(_ context.Context, accountParam *veritrans.AccountParam) (*veritrans.Account, error) {
-	// Update the veritrans account
-	return nil, nil
+	return v.AccountService.UpdateAccount(accountParam)
 }
 
 func (v *veritransService) Authorize(_ context.Context, param *veritrans.Params) error {
-	// Execute the payment using veritrans account or MDK token
-	return nil
+	_, err := v.PaymentService.Authorize(param, veritrans.PaymentServiceType(veritrans.PayCard))
+	return err
 }
 
 func (v *veritransService) Cancel(_ context.Context, param *veritrans.Params) error {
-	// Cancel the payment
-	return nil
+	_, err := v.PaymentService.Cancel(param, veritrans.PaymentServiceType(veritrans.PayCard))
+	return err
 }
