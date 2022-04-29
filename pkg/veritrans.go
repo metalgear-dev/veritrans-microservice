@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"os"
+
 	"github.com/david1992121/veritrans-microservice/internal/veritrans"
 )
 
@@ -8,6 +10,30 @@ import (
 type ServiceConfig struct {
 	MDKConfig        veritrans.MDKConfig
 	ConnectionConfig veritrans.ConnectionConfig
+}
+
+// GetServiceConfig initializes the service configuration
+func GetServiceConfig() *ServiceConfig {
+	mdkConfig := veritrans.MDKConfig{
+		APIURL:   os.Getenv("MDK_API_URL"),
+		APIToken: os.Getenv("MDK_API_TOKEN"),
+	}
+	connectionConfig := veritrans.ConnectionConfig{
+		MerchantCCID:     os.Getenv("MERCHANT_CCID"),
+		MerchantPassword: os.Getenv("MERCHANT_PASSWORD"),
+		AccountAPIURL:    os.Getenv("ACCOUNT_API_URL"),
+		PaymentAPIURL:    os.Getenv("PAYMENT_API_URL"),
+		SearchAPIURL:     os.Getenv("SEARCH_API_URL"),
+		TxnVersion:       os.Getenv("TXN_VERSION"),
+		DummyRequest:     os.Getenv("DUMMY_REQUEST"),
+	}
+
+	serviceConfig := &ServiceConfig{
+		MDKConfig:        mdkConfig,
+		ConnectionConfig: connectionConfig,
+	}
+
+	return serviceConfig
 }
 
 type veritransService struct {
