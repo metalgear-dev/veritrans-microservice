@@ -56,7 +56,7 @@ func MakeCreateAccountEndpoint(svc pkg.Service) endpoint.Endpoint {
 		req := request.(veritrans.AccountParam)
 		account, err := svc.CreateAccount(&req)
 		if err != nil {
-			return account, nil
+			return AccountResponse{Account: nil, Err: err.Error()}, nil
 		}
 		return AccountResponse{Account: account, Err: ""}, nil
 	}

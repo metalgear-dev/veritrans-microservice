@@ -6,13 +6,22 @@ import (
 	"net/http"
 
 	"github.com/david1992121/veritrans-microservice/internal/veritrans"
+	"github.com/david1992121/veritrans-microservice/pkg"
 	"github.com/david1992121/veritrans-microservice/pkg/endpoint"
 
 	httptransport "github.com/go-kit/kit/transport/http"
+	"github.com/go-kit/log"
 )
 
-// NewHTTPHandler initializes the http handler
-func NewHTTPHandler(ep endpoint.Set) http.Handler {
+// NewHTTPHandler returns the handler
+func NewHTTPHandler(logger log.Logger) http.Handler {
+	service := pkg.NewLoggingMiddleware(logger, pkg.NewService(pkg.GetServiceConfig()))
+	eps := endpoint.NewEndpointSet(service)
+	return GetHTTPHandler(eps)
+}
+
+// GetHTTPHandler initializes the http handler
+func GetHTTPHandler(ep endpoint.Set) http.Handler {
 	m := http.NewServeMux()
 
 	m.Handle("/mdk/token", httptransport.NewServer(
