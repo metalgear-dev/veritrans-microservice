@@ -23,7 +23,7 @@ func main() {
 	// set logger
 	var (
 		logger   log.Logger
-		httpAddr = net.JoinHostPort("localhost", envString("HTTP_PORT", defaultHTTPPort))
+		httpAddr = net.JoinHostPort("0.0.0.0", envString("HTTP_PORT", defaultHTTPPort))
 		// grpcAddr = net.JoinHostPort("localhost", envString("GRPC_PORT", defaultGRPCPort))
 	)
 
