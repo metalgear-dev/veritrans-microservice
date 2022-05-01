@@ -33,23 +33,28 @@ message AccountRequest {
   message CardParam {
     string cardNumber = 1;
     string cardExpire = 2;
-    string defaultCard = 3;    
+    optional string defaultCard = 3;    
   }
 
   optional CardParam cardParam = 2;
 }
 
 message AccountReply {
-  string accountId = 1;
+  message AccountInfo {
+    string accountId = 1;
 
-  message CardInfo {
-    string cardId = 1;
-    string cardExpire = 2;
-    string cardNumber = 3;
-    string defaultCard = 4;    
+    message CardInfo {
+      string cardId = 1;
+      string cardExpire = 2;
+      string cardNumber = 3;
+      string defaultCard = 4;    
+    }
+
+    repeated CardInfo cardInfo = 2;
   }
 
-  repeated CardInfo cardInfo = 2;
+  AccountInfo account = 1;
+  string err = 2;
 }
 
 message PaymentRequest {
@@ -60,7 +65,7 @@ message PaymentRequest {
 
   message PayNowIDParam {
     message AccountParam {
-      string accountParam = 1;
+      string accountId = 1;
     }
 
     optional AccountParam accountParam = 1;
