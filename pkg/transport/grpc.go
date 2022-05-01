@@ -173,8 +173,8 @@ func decodeGRPCMDKRequest(_ context.Context, grpcReq interface{}) (interface{}, 
 }
 
 func encodeMDKResponse(_ context.Context, endpointRes interface{}) (interface{}, error) {
-	res := endpointRes.(*endpoint.GetMDKTokenResponse)
-	return pb.TokenReply{Token: res.Token, Err: res.Err}, nil
+	res := endpointRes.(endpoint.GetMDKTokenResponse)
+	return &pb.TokenReply{Token: res.Token, Err: res.Err}, nil
 }
 
 func decodeGRPCAccountRequest(_ context.Context, grpcReq interface{}) (interface{}, error) {
@@ -196,7 +196,7 @@ func decodeGRPCAccountRequest(_ context.Context, grpcReq interface{}) (interface
 }
 
 func encodeAccountResponse(_ context.Context, endpointRes interface{}) (interface{}, error) {
-	res := endpointRes.(*endpoint.AccountResponse)
+	res := endpointRes.(endpoint.AccountResponse)
 	var accountReply pb.AccountReply
 	accountReply.Account = &pb.AccountReply_AccountInfo{
 		AccountId: res.Account.AccountID,
@@ -234,7 +234,7 @@ func decodeGRPCPaymentRequest(_ context.Context, grpcReq interface{}) (interface
 }
 
 func encodePaymentResponse(_ context.Context, endpointRes interface{}) (interface{}, error) {
-	res := endpointRes.(*endpoint.PaymentResponse)
+	res := endpointRes.(endpoint.PaymentResponse)
 	var paymentReply pb.PaymentReply
 	paymentReply.Err = res.Err
 	return &paymentReply, nil

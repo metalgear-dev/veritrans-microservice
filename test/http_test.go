@@ -21,7 +21,7 @@ var httpHandler http.Handler
 
 func init() {
 	logger := initLogger()
-	httpHandler = transport.NewHTTPHandler(logger)
+	httpHandler = transport.GetHTTPHandler(logger)
 }
 
 // TestMDK tests the request of mdk card token
