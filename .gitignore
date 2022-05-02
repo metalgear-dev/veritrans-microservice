@@ -22,4 +22,4 @@ go.work
 
 /cSpell.json
 /.env
-/scripts/set-env.sh
+/scripts/*.sh

@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+option go_package = "github.com/david1992121/vertirans-microservice/api/pb";
+
+service Veritrans {
+  rpc GetMDKToken (GetMDKTokenRequest) returns (TokenReply) {}
+  rpc CreateAccount (AccountRequest) returns (AccountReply) {}
+  rpc UpdateAccount (AccountRequest) returns (AccountReply) {}
+  rpc CreateCard (AccountRequest) returns (AccountReply) {}
+  rpc UpdateCard (AccountRequest) returns (AccountReply) {}
+  rpc DeleteCard (AccountRequest) returns (AccountReply) {}
+  rpc GetCard (AccountRequest) returns (AccountReply) {}
+  rpc Authorize (PaymentRequest) returns (PaymentReply) {}
+  rpc Capture (PaymentRequest) returns (PaymentReply) {}
+  rpc Cancel (PaymentRequest) returns (PaymentReply) {}
+}
+
+message GetMDKTokenRequest {
+  string cardNumber = 1;
+  string cardExpire = 2;
+  string securityCode = 3;
+  optional string cardHolderName = 4;
+}
+
+message TokenReply {
+  string token = 1;
+  string err = 2;  
+}
+
+message AccountRequest {
+  string accountID = 1;
+
+  message CardParam {
+    optional string cardNumber = 1;
+    optional string cardExpire = 2;
+    optional string defaultCard = 3;
+    optional string cardID = 4;
+  }
+
+  optional CardParam cardParam = 2;
+}
+
+message AccountReply {
+  message AccountInfo {
+    string accountID = 1;
+
+    message CardInfo {
+      string cardID = 1;
+      string cardExpire = 2;
+      string cardNumber = 3;
+      string defaultCard = 4;    
+    }
+
+    repeated CardInfo cardInfo = 2;
+  }
+
+  AccountInfo account = 1;
+  string err = 2;
+}
+
+message PaymentRequest {
+  string orderID = 1;
+  string amount = 2;
+  optional string jpo = 3;
+  optional string withCapture = 4;
+
+  message PayNowIDParam {
+    message AccountParam {
+      string accountID = 1;
+    }
+
+    optional AccountParam accountParam = 1;
+    string token = 2;
+  }
+
+  optional PayNowIDParam payNowIDParam = 5;
+}
+
+message PaymentReply {
+  string err = 1;
+}
