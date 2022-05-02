@@ -5,8 +5,10 @@ import (
 
 	"github.com/david1992121/veritrans-microservice/api/pb"
 	"github.com/david1992121/veritrans-microservice/internal/veritrans"
+	"github.com/david1992121/veritrans-microservice/pkg"
 	"github.com/david1992121/veritrans-microservice/pkg/endpoint"
 	grpctransport "github.com/go-kit/kit/transport/grpc"
+	"github.com/go-kit/log"
 )
 
 type grpcServer struct {
@@ -21,6 +23,13 @@ type grpcServer struct {
 	capture       grpctransport.Handler
 	cancel        grpctransport.Handler
 	pb.UnimplementedVeritransServer
+}
+
+// GetGRPCServer returns the handler
+func GetGRPCServer(logger log.Logger) pb.VeritransServer {
+	service := pkg.NewLoggingMiddleware(logger, pkg.NewService(pkg.GetServiceConfig()))
+	eps := endpoint.NewEndpointSet(service)
+	return NewGRPCServer(eps)
 }
 
 // NewGRPCServer function intializes a new gRPC server
@@ -180,16 +189,20 @@ func encodeMDKResponse(_ context.Context, endpointRes interface{}) (interface{},
 func decodeGRPCAccountRequest(_ context.Context, grpcReq interface{}) (interface{}, error) {
 	req := grpcReq.(*pb.AccountRequest)
 	var accountParam veritrans.AccountParam
-	accountParam.AccountID = req.AccountId
+	accountParam.AccountID = req.AccountID
 	if req.CardParam != nil {
-		if req.CardParam.CardNumber != "" {
-			accountParam.CardParam = &veritrans.CardParam{
-				CardNumber: req.CardParam.CardNumber,
-				CardExpire: req.CardParam.CardExpire,
-			}
-			if req.CardParam.DefaultCard != nil && *req.CardParam.DefaultCard != "" {
-				accountParam.CardParam.DefaultCard = *req.CardParam.DefaultCard
-			}
+		accountParam.CardParam = &veritrans.CardParam{}
+		if req.CardParam.CardNumber != nil && *req.CardParam.CardNumber != "" {
+			accountParam.CardParam.CardNumber = *(req.CardParam.CardNumber)
+		}
+		if req.CardParam.CardExpire != nil && *req.CardParam.CardExpire != "" {
+			accountParam.CardParam.CardExpire = *req.CardParam.CardExpire
+		}
+		if req.CardParam.DefaultCard != nil && *req.CardParam.DefaultCard != "" {
+			accountParam.CardParam.DefaultCard = *req.CardParam.DefaultCard
+		}
+		if req.CardParam.CardID != nil && *req.CardParam.CardID != "" {
+			accountParam.CardParam.CardID = *req.CardParam.CardID
 		}
 	}
 	return accountParam, nil
@@ -198,35 +211,38 @@ func decodeGRPCAccountRequest(_ context.Context, grpcReq interface{}) (interface
 func encodeAccountResponse(_ context.Context, endpointRes interface{}) (interface{}, error) {
 	res := endpointRes.(endpoint.AccountResponse)
 	var accountReply pb.AccountReply
-	accountReply.Account = &pb.AccountReply_AccountInfo{
-		AccountId: res.Account.AccountID,
+	if res.Account != nil {
+		accountReply.Account = &pb.AccountReply_AccountInfo{
+			AccountID: res.Account.AccountID,
+		}
+		for _, cardItem := range res.Account.CardInfo {
+			accountReply.Account.CardInfo = append(accountReply.Account.CardInfo, &pb.AccountReply_AccountInfo_CardInfo{
+				CardID:      cardItem.CardID,
+				CardExpire:  cardItem.CardExpire,
+				CardNumber:  cardItem.CardNumber,
+				DefaultCard: cardItem.DefaultCard,
+			})
+		}
 	}
-	for _, cardItem := range res.Account.CardInfo {
-		accountReply.Account.CardInfo = append(accountReply.Account.CardInfo, &pb.AccountReply_AccountInfo_CardInfo{
-			CardId:      cardItem.CardID,
-			CardExpire:  cardItem.CardExpire,
-			CardNumber:  cardItem.CardNumber,
-			DefaultCard: cardItem.DefaultCard,
-		})
-	}
+	accountReply.Err = res.Err
 	return &accountReply, nil
 }
 
 func decodeGRPCPaymentRequest(_ context.Context, grpcReq interface{}) (interface{}, error) {
 	req := grpcReq.(*pb.PaymentRequest)
 	var param veritrans.Params
-	param.OrderID = req.OrderId
+	param.OrderID = req.OrderID
 	param.Amount = req.Amount
 	if req.Jpo != nil && *req.Jpo != "" {
 		param.JPO = *req.Jpo
 	}
-	if req.PayNowIdParam != nil {
-		if req.PayNowIdParam.Token != "" {
-			param.PayNowIDParam.Token = req.PayNowIdParam.Token
+	if req.PayNowIDParam != nil {
+		if req.PayNowIDParam.Token != "" {
+			param.PayNowIDParam.Token = req.PayNowIDParam.Token
 		}
-		if req.PayNowIdParam.AccountParam != nil && req.PayNowIdParam.AccountParam.AccountId != "" {
+		if req.PayNowIDParam.AccountParam != nil && req.PayNowIDParam.AccountParam.AccountID != "" {
 			param.PayNowIDParam.AccountParam = &veritrans.AccountParam{
-				AccountID: req.PayNowIdParam.AccountParam.AccountId,
+				AccountID: req.PayNowIDParam.AccountParam.AccountID,
 			}
 		}
 	}
