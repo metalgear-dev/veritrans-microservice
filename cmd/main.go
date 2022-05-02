@@ -8,10 +8,16 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/david1992121/veritrans-microservice/api/pb"
+	"github.com/david1992121/veritrans-microservice/pkg"
+	"github.com/david1992121/veritrans-microservice/pkg/endpoint"
 	"github.com/david1992121/veritrans-microservice/pkg/transport"
 	"github.com/go-kit/kit/log"
+	kitgrpc "github.com/go-kit/kit/transport/grpc"
 	"github.com/joho/godotenv"
 	"github.com/oklog/oklog/pkg/group"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -24,7 +30,7 @@ func main() {
 	var (
 		logger   log.Logger
 		httpAddr = net.JoinHostPort("0.0.0.0", envString("HTTP_PORT", defaultHTTPPort))
-		// grpcAddr = net.JoinHostPort("localhost", envString("GRPC_PORT", defaultGRPCPort))
+		grpcAddr = net.JoinHostPort("0.0.0.0", envString("GRPC_PORT", defaultGRPCPort))
 	)
 
 	logger = initLogger()
@@ -35,8 +41,10 @@ func main() {
 	}
 
 	var (
-		httpHandler = transport.NewHTTPHandler(logger)
-		// grpcServer = transport.NewGRPCServer(eps)
+		service     = pkg.NewLoggingMiddleware(logger, pkg.NewService(pkg.GetServiceConfig()))
+		eps         = endpoint.NewEndpointSet(service)
+		httpHandler = transport.NewHTTPHandler(eps)
+		grpcServer  = transport.NewGRPCServer(eps)
 	)
 
 	var g group.Group
@@ -54,19 +62,22 @@ func main() {
 		})
 	}
 
-	// TODO : gRPC Listener and server
-	// {
-	// 	grpcListener, err := net.Listen("tcp", grpcAddr)
-	// 	if err != nil {
-	// 		logger.Log("transport", "gRPC", "during", "Listen", "err", err)
-	// 		os.Exit(1)
-	// 	}
-	// 	g.Add(func() error {
-	// 		return baseServer.serve(grpcListener)
-	// 	}, func(error) {
-	// 		grpcListener.Close()
-	// 	})
-	// }
+	{
+		grpcListener, err := net.Listen("tcp", grpcAddr)
+		if err != nil {
+			logger.Log("transport", "gRPC", "during", "Listen", "err", err)
+			os.Exit(1)
+		}
+		g.Add(func() error {
+			logger.Log("transport", "gRPC", "addr", grpcAddr)
+			baseServer := grpc.NewServer(grpc.UnaryInterceptor(kitgrpc.Interceptor))
+			pb.RegisterVeritransServer(baseServer, grpcServer)
+			reflection.Register(baseServer)
+			return baseServer.Serve(grpcListener)
+		}, func(error) {
+			grpcListener.Close()
+		})
+	}
 
 	{
 		// This function just sits and waits for ctrl-C.

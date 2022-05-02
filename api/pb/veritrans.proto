@@ -28,12 +28,13 @@ message TokenReply {
 }
 
 message AccountRequest {
-  string accountId = 1;
+  string accountID = 1;
 
   message CardParam {
-    string cardNumber = 1;
-    string cardExpire = 2;
-    optional string defaultCard = 3;    
+    optional string cardNumber = 1;
+    optional string cardExpire = 2;
+    optional string defaultCard = 3;
+    optional string cardID = 4;
   }
 
   optional CardParam cardParam = 2;
@@ -41,10 +42,10 @@ message AccountRequest {
 
 message AccountReply {
   message AccountInfo {
-    string accountId = 1;
+    string accountID = 1;
 
     message CardInfo {
-      string cardId = 1;
+      string cardID = 1;
       string cardExpire = 2;
       string cardNumber = 3;
       string defaultCard = 4;    
@@ -58,21 +59,21 @@ message AccountReply {
 }
 
 message PaymentRequest {
-  string orderId = 1;
+  string orderID = 1;
   string amount = 2;
   optional string jpo = 3;
   optional string withCapture = 4;
 
   message PayNowIDParam {
     message AccountParam {
-      string accountId = 1;
+      string accountID = 1;
     }
 
     optional AccountParam accountParam = 1;
     string token = 2;
   }
 
-  optional PayNowIDParam payNowIdParam = 5;
+  optional PayNowIDParam payNowIDParam = 5;
 }
 
 message PaymentReply {

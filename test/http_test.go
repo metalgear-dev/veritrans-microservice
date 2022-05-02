@@ -21,11 +21,11 @@ var httpHandler http.Handler
 
 func init() {
 	logger := initLogger()
-	httpHandler = transport.NewHTTPHandler(logger)
+	httpHandler = transport.GetHTTPHandler(logger)
 }
 
-// TestMDK tests the request of mdk card token
-func TestMDK(t *testing.T) {
+// TestHTTPMDK tests the request of mdk card token
+func TestHTTPMDK(t *testing.T) {
 	jsonStr := []byte(`{"card_number":"4111111111111111","card_expire":"12/22","security_code":"123"}`)
 	req := httptest.NewRequest(http.MethodPost, "/mdk/token", bytes.NewBuffer(jsonStr))
 	rec := httptest.NewRecorder()
@@ -42,8 +42,8 @@ func TestMDK(t *testing.T) {
 	assert.Equal(t, "", resStruct.Err)
 }
 
-// TestAccount function
-func TestAccount(t *testing.T) {
+// TestHTTPAccount function
+func TestHTTPAccount(t *testing.T) {
 	testAccountID := "test-account-001"
 	jsonStr := []byte(fmt.Sprintf(`{"accountId":"%s"}`, testAccountID))
 	req := httptest.NewRequest(http.MethodPost, "/account/create", bytes.NewBuffer(jsonStr))
@@ -63,8 +63,8 @@ func TestAccount(t *testing.T) {
 	}
 }
 
-// TestCard function
-func TestCard(t *testing.T) {
+// TestHTTPCard function
+func TestHTTPCard(t *testing.T) {
 	testAccountID := "test-account-001"
 	var cardID string
 	var accountRes endpoint.AccountResponse
@@ -138,8 +138,8 @@ func TestCard(t *testing.T) {
 	}
 }
 
-// TestPayment function
-func TestPayment(t *testing.T) {
+// TestHTTPPayment function
+func TestHTTPPayment(t *testing.T) {
 	testAccountID := "test-account-001"
 	var accountRes endpoint.AccountResponse
 	var cardID string
